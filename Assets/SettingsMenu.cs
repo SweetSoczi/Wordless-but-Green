@@ -15,7 +15,7 @@ public class SettingsMenu : MonoBehaviour
     public TMPro.TMP_Dropdown ResolutionDropdown;
 
     Resolution[] resolutions;
-    
+
 
     private void Start()
     {
@@ -24,23 +24,69 @@ public class SettingsMenu : MonoBehaviour
         ResolutionDropdown.ClearOptions();
 
         List<string> options = new List<string>();
+        List<Resolution> filteredResolutions = new List<Resolution>();
 
         int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            string option = resolutions[i].width + " x " + resolutions[i].height + " @ " + resolutions[i].refreshRateRatio + "hz";
-            options.Add(option);
 
-            if (resolutions[i].width == Screen.width && 
-                resolutions[i].height == Screen.height)
+        List<Vector2Int> allowedResolutions = new List<Vector2Int>
+    {
+        new Vector2Int(1920, 1080),
+        new Vector2Int(2560, 1440),
+        new Vector2Int(3440, 1440)
+    };
+
+        List<int> allowedRefreshRates = new List<int> { 60, 144, 160 };
+
+        foreach (Resolution res in resolutions)
+        {
+            Vector2Int resVector = new Vector2Int(res.width, res.height);
+            int roundedHz = Mathf.RoundToInt((float)res.refreshRateRatio.value);
+
+            if (allowedResolutions.Contains(resVector) && allowedRefreshRates.Contains(roundedHz))
             {
-                currentResolutionIndex = i;
+                string option = res.width + " x " + res.height + " @ " + roundedHz + "Hz";
+
+                if (!options.Contains(option))
+                {
+                    options.Add(option);
+                    filteredResolutions.Add(res);
+                }
             }
         }
 
         ResolutionDropdown.AddOptions(options);
+        resolutions = filteredResolutions.ToArray();
+
+        if (PlayerPrefs.HasKey("ResolutionIndex"))
+        {
+            currentResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex");
+
+            if (currentResolutionIndex < 0 || currentResolutionIndex >= resolutions.Length)
+            {
+                currentResolutionIndex = 0;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < resolutions.Length; i++)
+            {
+                int screenHz = Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value);
+                int optionHz = Mathf.RoundToInt((float)resolutions[i].refreshRateRatio.value);
+
+                if (resolutions[i].width == Screen.width &&
+                    resolutions[i].height == Screen.height &&
+                    optionHz == screenHz)
+                {
+                    currentResolutionIndex = i;
+                    break;
+                }
+            }
+        }
+
         ResolutionDropdown.value = currentResolutionIndex;
         ResolutionDropdown.RefreshShownValue();
+
+        SetResolution(currentResolutionIndex);
 
         if (PlayerPrefs.HasKey("MusicVolume"))
         {
@@ -53,6 +99,8 @@ public class SettingsMenu : MonoBehaviour
             SetSFXVolume();
         }
     }
+
+
     public void SetMusicVolume()
     {
         float volume = Music_Volume.value;
@@ -93,6 +141,9 @@ public class SettingsMenu : MonoBehaviour
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        int refreshRate = Mathf.RoundToInt((float)resolution.refreshRateRatio.value);
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen, refreshRate);
+
+        PlayerPrefs.SetInt("ResolutionIndex", resolutionIndex);
     }
 }
