@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    AudioMenager audioManager;
+
+    void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioMenager>();
+    }
 
     public CharacterController2D controller;
     public Animator animator;
@@ -14,11 +20,13 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerCombat playerCombat;
 
+    private float stepTimer = 0.2f;
+    public float stepInterval = 0.4f;
+
     void Start()
     {
         playerCombat = GetComponent<PlayerCombat>();
     }
-
 
     void Update()
     {
@@ -28,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
         {
             horizontalMove = 0f;
             animator.SetFloat("Speed", 0f);
-            return; 
+            return;
         }
 
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
@@ -43,12 +51,26 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Crouch"))
         {
             crouch = true;
+            audioManager.PlaySFX(audioManager.Run);
         }
         else if (Input.GetButtonUp("Crouch"))
         {
             crouch = false;
         }
 
+        if (Mathf.Abs(horizontalMove) > 0.1f && controller.IsGrounded && !crouch)
+        {
+            stepTimer += Time.deltaTime;
+            if (stepTimer >= stepInterval)
+            {
+                audioManager.PlaySFX(audioManager.Run);
+                stepTimer = 0f;
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
+        }
     }
 
     void HandleFlip()
@@ -63,10 +85,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     public void OnLanding()
     {
-
         animator.SetBool("IsJumping", false);
     }
 
@@ -90,5 +110,4 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
         jump = false;
     }
-
 }

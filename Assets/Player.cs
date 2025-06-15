@@ -3,6 +3,13 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
+    AudioMenager audioManager;
+
+    void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioMenager>();
+    }
+
     public int maxHealth = 8;
     public int currentHealth;
     public HealthBar healthBar;
@@ -29,10 +36,12 @@ public class Player : MonoBehaviour
         healthBar.SetHealth(currentHealth);
 
         animator.SetTrigger("Hurt");
+        audioManager.PlaySFX(audioManager.Hurt);
 
         if (currentHealth <= 0)
         {
             Die();
+            audioManager.PlaySFX(audioManager.Death);
         }
     }
 

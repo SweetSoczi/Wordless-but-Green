@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
+    AudioMenager audioManager;
+
+    void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioMenager>();
+    }
+
     public Animator animator;
 
     public Transform attackPoint;
@@ -35,6 +42,7 @@ public class PlayerCombat : MonoBehaviour
     public void StartAttack()
     {
         isAttacking = true;
+
     }
 
     public void EndAttack()
@@ -44,6 +52,8 @@ public class PlayerCombat : MonoBehaviour
 
     public void DoDamage()
     {
+        audioManager.PlaySFX(audioManager.Hit);
+
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
         foreach (Collider2D enemy in hitEnemies)
@@ -51,6 +61,7 @@ public class PlayerCombat : MonoBehaviour
             enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
         }
     }
+
 
     private void OnDrawGizmosSelected()
     {

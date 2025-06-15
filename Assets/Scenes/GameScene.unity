@@ -676,6 +676,7 @@ MonoBehaviour:
   m_GroundCheck: {fileID: 852096152}
   m_CeilingCheck: {fileID: 377012391}
   m_CrouchDisableCollider: {fileID: 218275779}
+  m_Grounded: 0
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
@@ -803,6 +804,7 @@ MonoBehaviour:
   controller: {fileID: 218275777}
   animator: {fileID: 218275781}
   runSpeed: 30
+  stepInterval: 1
 --- !u!95 &218275781
 Animator:
   serializedVersion: 7
