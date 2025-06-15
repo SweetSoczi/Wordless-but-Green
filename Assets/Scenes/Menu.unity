@@ -5589,13 +5589,13 @@ MonoBehaviour:
   musicSource: {fileID: 641200402}
   SFXSource: {fileID: 1432581919}
   MenuTheme: {fileID: 8300000, guid: d9a63a763456af148963cb1b7e3b1429, type: 3}
-  Death: {fileID: 0}
-  Hurt: {fileID: 0}
+  Death: {fileID: 8300000, guid: bb46aeea333218f4a96f3e86cdc28594, type: 3}
+  Hurt: {fileID: 8300000, guid: bb518fee726813d4c88d6822eee0e21d, type: 3}
   Jump: {fileID: 0}
-  Hit: {fileID: 0}
-  Run: {fileID: 0}
+  Hit: {fileID: 8300000, guid: 61fcb307c744fc54ba15b9b0f6c7200a, type: 3}
+  Run: {fileID: 8300000, guid: 581149f7d08899648a4c046a40941c38, type: 3}
   PressButton: {fileID: 0}
-  SwitchButtons: {fileID: 0}
+  SwitchButtons: {fileID: 8300000, guid: b06a6edc985dc3f4c90fc9ff4825c84e, type: 3}
 --- !u!4 &2077348897
 Transform:
   m_ObjectHideFlags: 0
