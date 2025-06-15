@@ -13,6 +13,8 @@ public class PlayerCombat : MonoBehaviour
     public float attackRate = 2f;
     private float nextAttackTime = 0f;
 
+    [HideInInspector] public bool isAttacking = false;
+
     void Update()
     {
         if (Time.time >= nextAttackTime)
@@ -30,6 +32,16 @@ public class PlayerCombat : MonoBehaviour
         animator.SetTrigger("Attack");
     }
 
+    public void StartAttack()
+    {
+        isAttacking = true;
+    }
+
+    public void EndAttack()
+    {
+        isAttacking = false;
+    }
+
     public void DoDamage()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
@@ -38,7 +50,6 @@ public class PlayerCombat : MonoBehaviour
         {
             enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
         }
-
     }
 
     private void OnDrawGizmosSelected()
